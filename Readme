@@ -1,0 +1,23 @@
+Infrarot-Termometer
+===================
+   
+Hardware:
+---------
+* Arduino Nano (es ist natuerlich auch jedes
+  andere Board mit einem Atmega verwendbar...) 
+* IR-Sensor MLX90614 via TWI an den MC ange-
+  schlossen
+* TWI-LCD (via PCF8574) siehe auch:
+  http://bralug.de/wiki/BLIT2008-Board-LCD
+   
+PullUps an SDA und SCL nicht vergessen!
+   
+Es werden Umgebungstemperatur und Objekttemperatur
+(IR-Sensor) in Grad Celsius ueber die serielle
+Schnittstelle und auf dem LCD ausgegeben.
+  
+---------
+Have fun!
+
+
+Uwe Berger (bergeruw(at)gmx.net); 2015
