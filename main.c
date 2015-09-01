@@ -19,12 +19,17 @@
  * (IR-Sensor) in Grad Celsius ueber die serielle
  * Schnittstelle und auf dem LCD ausgegeben.
  * 
+ * Zur Aufbereitung der Ausgabe auf dem LCD wird sprintf()
+ * verwendet, was, von der Programmgroesse her gesehen, 
+ * nicht unbedingt optimal ist...
+ * 
  * ---------
  * Have fun!
  * 
  ********************************************************/
 
-#include <util/delay.h>
+//#include <util/delay.h>
+#include <stdio.h>
 #include "usart.h"
 #include "i2cmaster.h"
 #include "i2clcd.h"
@@ -51,6 +56,12 @@ void long_delay(uint16_t ms)
 	for(; ms>0; ms--) _delay_ms(1);
 }
  
+
+//****************************************************
+int16_t abs(int16_t val) {
+	if (val<0) return -val; else return val;
+}
+
 
 //****************************************************
 uint16_t read16_mlx90614(uint8_t reg)
@@ -80,8 +91,7 @@ int16_t get_temp_mlx90614(uint8_t reg)
 //****************************************************
 int main(void) {
 	int16_t ta, to;
-	uint8_t x;
-	char buf[5];
+	char s[16];
 
 	// TWI initialisieren
 	i2c_init();
@@ -90,53 +100,26 @@ int main(void) {
 	lcd_init();
 	lcd_backlight(ON);
 	
-	// serielle Schnittstelle
+	// serielle Schnittstelle initialisieren
 	usart_init(BAUDRATE); 
 	printf_uart("IR-Thermometer; Uwe Berger; 2015\r\n"); 
 	
 	while(1) {
-
-		// Temperaturwerte holen...
-		// ...Umgebungstemperatur
+		// ...Umgebungstemperatur holen
 		ta=get_temp_mlx90614(MLX90614_TA);
-		// ...Objekttemperatur (IR-Sensor)
+		// ...Objekttemperatur holen
 		to=get_temp_mlx90614(MLX90614_TOBJ1);
-		
+
 		// Ausgabe UART
-		printf_uart("TA: %i.%i°C\t", ta/100, ta%100);
-		printf_uart("TOBJ: %i.%i°C\n\r", to/100, to%100);
-		
+		printf_uart("TA: %i.%i°C\t", ta/100, abs(ta%100));
+		printf_uart("TOBJ: %i.%i°C\n\r", to/100, abs(to%100));
+
 		// Ausgabe LCD
-		lcd_command(LCD_CLEAR);
-		x=1;
-		lcd_printlc(1, x, "TA...:");
-		x += 7;
-		itoa(ta/100, buf, 10);	
-		lcd_printlr(1, x, buf);
-		x += strlen(buf);
-		lcd_printlc(1, x, ".");
-		x += 1;
-		itoa(ta%100, buf, 10);	
-		lcd_printlr(1, x, buf);
-		x += strlen(buf);
-		lcd_putcharlr(1, x, 223);
-		x += 1;
-		lcd_printlr(1, x, "C");
-		x=1;
-		lcd_printlc(2, x, "TOBJ.:");
-		x += 7;
-		itoa(to/100, buf, 10);	
-		lcd_printlr(2, x, buf);
-		x += strlen(buf);
-		lcd_printlc(2, x, ".");
-		x += 1;
-		itoa(to%100, buf, 10);	
-		lcd_printlr(2, x, buf);
-		x += strlen(buf);
-		lcd_putcharlr(2, x, 223);
-		x += 1;
-		lcd_printlr(2, x, "C");
-		
+		sprintf(s, "TA..: %i.%i%cC", ta/100, abs(ta%100), 223);
+		lcd_printlr(1, 1, s);
+		sprintf(s, "TOBJ: %i.%i%cC", to/100, abs(to%100), 223);
+		lcd_printlr(2, 1, s);
+
 		// 2s Pause
 		long_delay(2000);
 	}
