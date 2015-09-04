@@ -19,17 +19,11 @@
  * (IR-Sensor) in Grad Celsius ueber die serielle
  * Schnittstelle und auf dem LCD ausgegeben.
  * 
- * Zur Aufbereitung der Ausgabe auf dem LCD wird sprintf()
- * verwendet, was, von der Programmgroesse her gesehen, 
- * nicht unbedingt optimal ist...
- * 
  * ---------
  * Have fun!
  * 
  ********************************************************/
 
-//#include <util/delay.h>
-#include <stdio.h>
 #include "usart.h"
 #include "i2cmaster.h"
 #include "i2clcd.h"
@@ -91,7 +85,6 @@ int16_t get_temp_mlx90614(uint8_t reg)
 //****************************************************
 int main(void) {
 	int16_t ta, to;
-	char s[16];
 
 	// TWI initialisieren
 	i2c_init();
@@ -105,20 +98,21 @@ int main(void) {
 	printf_uart("IR-Thermometer; Uwe Berger; 2015\r\n"); 
 	
 	while(1) {
-		// ...Umgebungstemperatur holen
-		ta=get_temp_mlx90614(MLX90614_TA);
-		// ...Objekttemperatur holen
-		to=get_temp_mlx90614(MLX90614_TOBJ1);
+
+		// Temperaturen auslesen
+		ta=get_temp_mlx90614(MLX90614_TA); // Umgebungstemperatur
+		to=get_temp_mlx90614(MLX90614_TOBJ1); // Objekttemperatur
 
 		// Ausgabe UART
 		printf_uart("TA: %i.%i°C\t", ta/100, abs(ta%100));
-		printf_uart("TOBJ: %i.%i°C\n\r", to/100, abs(to%100));
+		printf_uart("TO: %i.%i°C\n\r", to/100, abs(to%100));
 
 		// Ausgabe LCD
-		sprintf(s, "TA..: %i.%i%cC", ta/100, abs(ta%100), 223);
-		lcd_printlr(1, 1, s);
-		sprintf(s, "TOBJ: %i.%i%cC", to/100, abs(to%100), 223);
-		lcd_printlr(2, 1, s);
+		lcd_command(LCD_CLEAR);
+		lcd_gotolr(1,1);
+		lcd_printf("TA: %i.%i%cC", ta/100, abs(ta%100), 223);
+		lcd_gotolr(2,1);
+		lcd_printf("TO: %i.%i%cC", to/100, abs(to%100), 223);
 
 		// 2s Pause
 		long_delay(2000);

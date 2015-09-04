@@ -110,6 +110,12 @@
 
 #include <util/delay.h>
 #include <stdbool.h>
+#include <avr/pgmspace.h>
+
+#include <stdlib.h>
+#include <stdarg.h>
+#include <ctype.h>
+#include <string.h>
 
 
 #include "i2cmaster.h"
@@ -405,8 +411,9 @@ void lcd_wait_us(unsigned short us);			//-	Wait some microseconds
 void lcd_wait_ms(unsigned short ms);			//-	Wait some milliseconds
 
 
-void lcd_backlight(int bl);			//
-
+void lcd_backlight(int bl);			
+void lcd_printf_P (const char *Buffer,...);
+#define lcd_printf(format, args...)   lcd_printf_P(PSTR(format) , ## args)
 
 //-------------------------------------------------------------------------------------------------------------------
 /*@}*/ 
