@@ -8,12 +8,15 @@
  * ---------
  *   * Arduino Nano (es ist natuerlich auch jedes
  *     andere Board mit einem Atmega verwendbar...) 
- *   * IR-Sensor MLX90614 via TWI an den MC ange-
- *     schlossen
  *   * TWI-LCD (via PCF8574) siehe auch:
  *     http://bralug.de/wiki/BLIT2008-Board-LCD
- * 
- * PullUps an SDA und SCL nicht vergessen!
+ *   * IR-Sensor MLX90614 via TWI an den MC ange-
+ *     schlossen:
+ *      ** Pin1 --> SCL
+ *      ** Pin2 --> SDA
+ *      ** Pin3 --> 5V
+ *      ** Pin4 --> GND
+ *     (Pull-Up-Widerstaende fuer TWI nicht vergessen...!)
  * 
  * Es werden Umgebungstemperatur und Objekttemperatur
  * (IR-Sensor) in Grad Celsius ueber die serielle
