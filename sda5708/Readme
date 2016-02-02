@@ -1,0 +1,18 @@
+Infrarot-Termometer mit MLX90617, SDA5708
+=========================================
+ 
+Hardware:
+---------
+* ATTiny2313 in Standard-Beschaltung
+* IR-Sensor MLX90614 (via I2C)
+* Display SDA5708
+
+Verwendete MCU-PINs siehe Quelltext ;-)
+
+Es wird Umgebungs- und Objekttemperatur in 
+Grad Celsius auf dem Display ausgegeben.
+
+---------
+Have fun!
+
+Uwe Berger (bergeruw(at)gmx.net); 2016
